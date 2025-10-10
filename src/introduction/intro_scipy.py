@@ -8,7 +8,7 @@
 # Descripción: Ejercicios básicos de manejo de scipy
 # ============================================================
 import numpy as np
-from scipy import linalg, stats, optimize, signal
+from scipy import linalg, stats, optimize, signal as sp_signal, fft
 from typing import Callable
 ################################################################################
 # NOTE: Revisa la API de SciPy en https://docs.scipy.org/doc//scipy/index.html #
@@ -32,7 +32,7 @@ def solve_linear(A: np.ndarray, b: np.ndarray) -> np.ndarray:
     - np.ndarray
         Solución del sistema lineal como vector columna.
     """
-    solution = None
+    solution = linalg.solve(A, b)
     return solution
 
 # Ejercicio 2
@@ -52,8 +52,8 @@ def get_matrix_properties(mat: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     - tuple: (det, inv)
         Determinante y matriz inversa.
     """
-    det = None
-    inv = None
+    det = linalg.det(mat)
+    inv = linalg.inv(mat)
     return (det, inv)
 
 # Ejercicio 3
@@ -74,9 +74,9 @@ def get_statistics(arg: np.ndarray) -> tuple[float, float, float]:
     - tuple: (mean, tstd, mode)
         Media, desviación estándar y moda como flotantes.
     """
-    mean = None
-    tstd = None
-    mode = None
+    mean = np.mean(arg)
+    tstd = stats.tstd(arg)
+    mode = stats.mode(arg, keepdims=True).mode[0]
     return (mean, tstd, mode)
 
 # Ejercicio 4
@@ -95,7 +95,7 @@ def find_min(fun: Callable[[float], float]) -> optimize.OptimizeResult:
     - OptimizeResult
         Objeto con los resultados de la optimización.
     """
-    found_min = None
+    found_min = optimize.minimize_scalar(fun)
     return found_min
 
 # Ejercicio 5
@@ -116,7 +116,16 @@ def get_spectrum(signal: np.ndarray, sample_rate: float) -> tuple[np.ndarray, np
     - tuple: (frecuencias, magnitudes)
         Frecuencias positivas y sus magnitudes correspondientes.
     """
-    spectrum = None
+    N = len(signal)
+    yf = fft.fft(signal)
+    xf = fft.fftfreq(N, 1 / sample_rate)
+    
+    # Tomar solo las frecuencias positivas
+    positive_freq_idx = xf >= 0
+    frequencies = xf[positive_freq_idx]
+    magnitudes = np.abs(yf[positive_freq_idx])
+    
+    spectrum = (frequencies, magnitudes)
     return spectrum
 
 # Ejercicio 6
@@ -142,5 +151,8 @@ def low_pass_filter(signal: np.ndarray, fs: float, cutoff: float = 10.0, order: 
     - np.ndarray
         Señal filtrada.
     """
-    clean_signal = None
+    nyquist = 0.5 * fs
+    normal_cutoff = cutoff / nyquist
+    b, a = sp_signal.butter(order, normal_cutoff, btype='low', analog=False)
+    clean_signal = sp_signal.filtfilt(b, a, signal)
     return clean_signal

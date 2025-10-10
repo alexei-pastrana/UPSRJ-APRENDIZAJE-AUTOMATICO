@@ -18,6 +18,7 @@ CSV_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "inputs", "e
 
 # Ruta a la información de entrada
 SOURCE_URL = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-ML0101EN-SkillsNetwork/labs/Module%202/data/FuelConsumptionCo2.csv"
+FILE = CSV_FILE  # CAMBIO IMPORTANTE: Usar CSV_FILE en lugar de SOURCE_URL
 
 SEPARATOR = f"{'='*50}"
 
@@ -37,26 +38,30 @@ def introduction():
         print(f"- Estudiantes cargados: {total}")
 
         # Filtrar estudiantes con calificación > 8
-        aprobados = intro.get_above(df, col="calificacion", n=8)
+        aprobados = intro.get_above(df, col="promedio", n=8)
         if aprobados is None or aprobados.empty:
             print("Error: No se pudo filtrar estudiantes aprobados.\n")
             return os.EX_SOFTWARE
         print(f"- Estudiantes aprobados:\n{aprobados}")
 
         # Agrupar por carrera y calcular promedio
-        promedio_por_carrera = intro.group_and_average(aprobados, group="carrera", avg="calificacion")
+        promedio_por_carrera = intro.group_and_average(aprobados, group="carrera", avg="promedio")
         if promedio_por_carrera is None or promedio_por_carrera.empty:
             print("Error: No se pudo calcular el promedio por carrera.\n")
             return os.EX_SOFTWARE
         print(f"- Promedio por carrera:\n{promedio_por_carrera}")
 
+        # CORRECCIÓN: Crear directorio outputs si no existe
+        output_dir = os.path.join(os.path.dirname(CSV_FILE), "..", "outputs")
+        os.makedirs(output_dir, exist_ok=True)
+        
         # Exportar resultados
-        OUTPUT = os.path.join(os.path.dirname(__file__), "outputs", "aprobados.csv")
+        OUTPUT = os.path.join(output_dir, "aprobados.csv")
         try:
             intro.export_data(aprobados, OUTPUT)
             print(f"- Datos exportados a: {OUTPUT}")
-        except:
-            print("Error: No se pudo exportar el archivo CSV.\n")
+        except Exception as e:
+            print(f"Error: No se pudo exportar el archivo CSV: {e}\n")
             return os.EX_SOFTWARE
 
         # Comparar DataFrames
@@ -91,6 +96,9 @@ def introduction():
         # Reasignar calificaciones suavizadas
         df["calificacion curvada"] = curva_suavizada
 
+        # CORRECCIÓN: Guardar analisis.png en la ubicación correcta
+        analysis_plot = os.path.join(os.path.dirname(CSV_FILE), "..", "analisis.png")
+        
         # Visualizar la calificación real vs. curvada
         # Analisis de justicia evaluativa, variabilidad y decisiones pedagógicas basadas en datos.
         try:
@@ -103,11 +111,11 @@ def introduction():
             plt.legend()
             plt.grid(True)
             plt.tight_layout()
-            plt.savefig("analisis.png", dpi=300)
-            plt.show()
-            print("Gráfica guardada como 'analisis.png'\n")
-        except:
-            print("Error: No se pudo generar la gráfica.\n")
+            plt.savefig(analysis_plot, dpi=300)
+            plt.close()  # IMPORTANTE: Cerrar la figura para liberar memoria
+            print(f"Gráfica guardada como '{analysis_plot}'\n")
+        except Exception as e:
+            print(f"Error: No se pudo generar la gráfica: {e}\n")
             return os.EX_SOFTWARE
 
         print(f"Completado.\n")
