@@ -52,7 +52,7 @@ def introduction():
         print(f"- Promedio por carrera:\n{promedio_por_carrera}")
 
         # CORRECCIÓN: Crear directorio outputs si no existe
-        output_dir = os.path.join(os.path.dirname(CSV_FILE), "..", "outputs")
+        output_dir = os.path.join(os.path.dirname(CSV_FILE), "..", "outputs", "ejercicio1")
         os.makedirs(output_dir, exist_ok=True)
         
         # Exportar resultados
@@ -97,7 +97,7 @@ def introduction():
         df["calificacion curvada"] = curva_suavizada
 
         # CORRECCIÓN: Guardar analisis.png en la ubicación correcta
-        analysis_plot = os.path.join(os.path.dirname(CSV_FILE), "..", "analisis.png")
+        analysis_plot = os.path.join(output_dir, "analisis.png")
         
         # Visualizar la calificación real vs. curvada
         # Analisis de justicia evaluativa, variabilidad y decisiones pedagógicas basadas en datos.
@@ -134,7 +134,8 @@ def linear_regression():
     status = os.EX_OK
     
     # Definición de parámetros para comparación de modelos de regresión lineal
-    OUTPUT = os.path.join(os.path.dirname(__file__), "output")
+    OUTPUT = os.path.join(os.path.dirname(__file__), "outputs", "ejercicio2")
+    os.makedirs(OUTPUT, exist_ok=True)
     HISTOGRAM = os.path.join(OUTPUT, "histogram.png")
     BASE = "CO2EMISSIONS"
     FEATURE_1 = "ENGINESIZE"
@@ -161,7 +162,8 @@ def multiple_linear_regression():
     status = os.EX_OK
     
     # Definición de parámetros para comparación de modelos de regresión lineal
-    OUTPUT = os.path.join(os.path.dirname(__file__), "output")
+    OUTPUT = os.path.join(os.path.dirname(__file__), "outputs", "ejercicio3")
+    os.makedirs(OUTPUT, exist_ok=True)
     CORRELATION = os.path.join(OUTPUT, "correlation.png")
     BASE = "CO2EMISSIONS"
     FEATURE_1 = "ENGINESIZE"
@@ -189,7 +191,8 @@ def logistic_regression():
     
     # Definición de parámetros para comparación de modelos de regresión logistica
     CHURN_URL = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-ML0101EN-SkillsNetwork/labs/Module%203/data/ChurnData.csv"
-    OUTPUT = os.path.join(os.path.dirname(__file__), "output")
+    OUTPUT = os.path.join(os.path.dirname(__file__), "outputs", "ejercicio4")
+    os.makedirs(OUTPUT, exist_ok=True)
     BASE = "churn"
         
     try:

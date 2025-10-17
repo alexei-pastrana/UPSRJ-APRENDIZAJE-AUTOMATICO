@@ -177,8 +177,8 @@ class TestEvaluationOne(unittest.TestCase):
         self.assertFalse(df.empty, "csv_registers devolvió un DataFrame vacío")
 
         # Verificar existencia de archivos de salida
-        output_csv = os.path.join(os.path.dirname(main.FILE), "..", "outputs", "aprobados.csv")
-        output_plot = os.path.join(os.path.dirname(main.FILE), "..", "analisis.png")
+        output_csv = os.path.join(os.path.dirname(main.FILE), "..", "outputs", "ejercicio1", "aprobados.csv")
+        output_plot = os.path.join(os.path.dirname(main.FILE), "..", "outputs", "ejercicio1", "analisis.png")
         self.assertTrue(os.path.exists(output_csv), "No se encontró 'aprobados.csv'")
         self.assertTrue(os.path.exists(output_plot), "No se encontró 'analisis.png'")
 

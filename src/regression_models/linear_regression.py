@@ -80,7 +80,9 @@ class LinearRegressionCompare:
         )
         
         return (x_train, x_test, y_train, y_test)
-    
+
+    # TODO: Define un método que devuelva un objeto "linear_model.LinearRegression" de scikit-learn.
+    # NOTE: https://scikit-learn.org/stable/modules/linear_model.html 
     def create_model(self) -> linear_model.LinearRegression:
         """
         Crea un modelo de regresión lineal.
@@ -89,7 +91,11 @@ class LinearRegressionCompare:
             LinearRegression: Modelo vacío listo para entrenar.
         """
         return linear_model.LinearRegression()
-    
+
+    # TODO: Define un método que entrene un modelo de entrada "linear_model" de scikit-learn
+    #       con la información de entrada "data".
+    # NOTE: https://numpy.org/doc/stable/reference/generated/numpy.ndarray.reshape.html
+    #       https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression.fit
     def train_model(self, model: linear_model.LinearRegression, data: tuple) -> None:
         """
         Entrena el modelo con los datos de entrenamiento.
@@ -103,7 +109,9 @@ class LinearRegressionCompare:
         
         if len(model.coef_.shape) == 1:
             model.coef_ = model.coef_.reshape(1, -1)
-    
+    # TODO: Define un método que obtenga los coeficientes de regresor y la intercepción
+    #       de un modelo de entrada "linear_model" de scikit-learn.
+    # NOTE: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression
     def get_coef_and_int(self, model: linear_model.LinearRegression) -> None:
         """
         Imprime los coeficientes y la intercepción del modelo.
@@ -113,7 +121,9 @@ class LinearRegressionCompare:
         """
         print(f"Coeficiente(s): {model.coef_}")
         print(f"Intercepción: {model.intercept_}")
-    
+
+    # TODO: Define un método que haga una predicción con el modelo y carácteristica de entrada.
+    # NOTE: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression.predict   
     def predict(self, model: linear_model.LinearRegression, x: np.ndarray) -> np.ndarray:
         """
         Realiza predicciones con el modelo.
