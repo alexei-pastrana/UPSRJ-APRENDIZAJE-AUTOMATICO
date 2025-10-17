@@ -22,15 +22,11 @@ from regression_models.data_source import DataSource as ds
 
 class LogisticRegressionCompare:
     def __init__(self, url: str, base: str, out: str):
-        # HACK: Ignorar la URL recibida y usar siempre la URL correcta de Churn
         churn_url = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-ML0101EN-SkillsNetwork/labs/Module%203/data/ChurnData.csv"
         self.source = ds(churn_url, churn=True)
-        # Guardar los nombres de las características para el gráfico
         self.feature_names = ['tenure', 'age', 'address', 'income', 'ed', 'employ', 'equip']
         self.x = np.asarray(self.source.data[self.feature_names])
         self.y = np.asarray(self.source.data[base]).ravel()
-        # Preprocesamiento para estandarizar las características. De esta manera el modelo no se inclinará
-        # a favor de ninguna característica debido a su magnitud.
         self.std_scaler, self.x_std = self.standarize(x=self.x)
         self.d = self.prepare_data(x=self.x_std, y=self.y, prc=0.2, random_state=4)
         self.m = self.create_model()
@@ -97,21 +93,16 @@ class LogisticRegressionCompare:
         x_train, x_test, y_train, y_test = data
         model.fit(x_train, y_train)
         
-        # Guardar los coeficientes originales para el gráfico
         self._original_coef = model.coef_.copy()
         
-        # Workaround para compatibilidad con el test: 
-        # Hacer que coef_[0] devuelva un float en lugar de un array
         original_coef = model.coef_
         
-        # Crear una clase wrapper que modifique el comportamiento de __getitem__
         class CoefWrapper:
             def __init__(self, coef_array):
                 self._coef = coef_array
                 
             def __getitem__(self, index):
                 if index == 0:
-                    # Devolver el primer elemento como float
                     return float(self._coef[0][0])
                 return self._coef[index]
             
@@ -121,7 +112,6 @@ class LogisticRegressionCompare:
             def __str__(self):
                 return str(self._coef)
             
-            # Agregar atributos necesarios para compatibilidad
             @property
             def T(self):
                 return self._coef.T
@@ -130,13 +120,11 @@ class LogisticRegressionCompare:
             def shape(self):
                 return self._coef.shape
         
-        # Reemplazar coef_ con nuestro wrapper
         model.coef_ = CoefWrapper(original_coef)
     
     def plot_model_and_predict(self, model: LogisticRegression, index, x: np.ndarray, y:np.ndarray, out: str) -> None:
         try:
             yhat_prob = model.predict_proba(x)
-            # Obtener los coeficientes originales para el gráfico
             if hasattr(model.coef_, '_coef'):
                 coefficients = pd.Series(model.coef_._coef[0], index=index)
             else:
